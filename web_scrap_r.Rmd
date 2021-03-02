@@ -1,0 +1,29 @@
+---
+title: "resistance"
+author: "Maxwel Coura Oliveira"
+date: "3/2/2021"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rvest)
+library(tidyverse)
+```
+
+```{r}
+world_res <- read_html("http://weedscience.org/Summary/CountrySummary.aspx")
+```
+
+
+```{r}
+resistance_chart <- world_res %>% 
+    html_node("table") %>% 
+    html_table(fill = TRUE, header = TRUE) 
+
+resistance_chart
+```
