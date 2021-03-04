@@ -1,0 +1,33 @@
+---
+title: "scrap_image"
+author: "Maxwel Coura Oliveira"
+date: "3/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+url_pattern <- "(?i)http[s]?://(?:[a-z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-f][0-9a-f]))+\\.jpg"
+
+
+
+# Type your answer below
+hot_5_img_url <- scraper(
+    url = "http://dataquestio.github.io/web-scraping-pages/The%20Hot%20100%20Chart%20_%20Billboard.html", 
+                         output = "style",
+                         selector = ".chart-element__image")
+
+hot_100_styledata_top5 <- hot_5_img_url %>%
+    head(n = 5)
+
+hot_5_img_url <- stringr::str_extract(hot_100_styledata_top5, url_pattern)
+```
+

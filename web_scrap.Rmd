@@ -1,0 +1,58 @@
+---
+title: "web_scrap"
+author: "Maxwel Coura Oliveira"
+date: "3/3/2021"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rvest)
+```
+
+```{r}
+source("web_scrap.R")
+```
+
+```{r herb-R-country}
+herb_resistance <- scraper(url = "http://weedscience.org/Summary/CountrySummary.aspx", selector = "table", all_nodes = FALSE, output = "table")
+
+chart_resistance <- herb_resistance %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  as_tibble() %>% 
+  pivot_longer(cols = A:Other, names_to = "SOA", values_to = "Number")
+```
+
+
+```{r}
+usa_resistance <- scraper(url = "http://weedscience.org/Summary/Country.aspx?CountryID=45", selector = ".rgMasterTable", all_nodes = FALSE, output = "table")
+```
+
+```{r}
+chart_usa <- usa_resistance %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  janitor::clean_names()
+
+chart_usa1 <- as_tibble(chart_usa)
+
+chart_usa1 %>% 
+  mutate()
+```
+
+```{r}
+bra_resistance <- scraper(url = "http://weedscience.org/Summary/Country.aspx?CountryID=5", selector = ".rgMasterTable", all_nodes = FALSE, output = "table")
+```
+
+```{r}
+chart_bra <- bra_resistance %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  janitor::clean_names() %>% 
+  as_tibble()
+```
+
+

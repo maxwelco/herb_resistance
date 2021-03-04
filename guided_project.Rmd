@@ -1,0 +1,125 @@
+---
+title: "guided_project"
+author: "Maxwel Coura Oliveira"
+date: "3/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(rvest)
+library(tidyverse)
+```
+
+
+```{r}
+wp_content <- read_html("https://dataquestio.github.io/web-scraping-pages/IMDb-DQgp.html")
+```
+
+
+```{r}
+title <- wp_content %>% 
+  html_nodes(".lister-item-header a") %>% 
+  html_text()
+```
+
+```{r}
+year <- wp_content %>% 
+  html_nodes(".text-muted.unbold") %>% 
+  html_text()
+
+year <- readr::parse_number(year)
+```
+
+
+```{r}
+run_time <- wp_content %>% 
+  html_nodes(".runtime") %>% 
+  html_text()
+
+run_time <- readr::parse_number(run_time)
+```
+
+```{r}
+genre <- wp_content %>% 
+  html_nodes(".genre") %>% 
+  html_text()
+
+genre <- stringr::str_trim(genre)
+```
+
+
+```{r}
+ratings <- wp_content %>% 
+  html_nodes(".ratings-imdb-rating strong") %>% 
+  html_text()
+```
+
+
+```{r}
+metascores <- wp_content %>% 
+  html_nodes(".ratings-metascore") %>% 
+  html_text()
+
+metascores <- readr::parse_number(metascores)
+```
+
+
+```{r}
+votes <- wp_content %>% 
+  html_nodes(".text-muted+ span") %>% 
+  html_text()
+
+votes <- readr::parse_number(votes)
+```
+
+```{r}
+append_vector <- function(vector, inserted_indices, values){
+
+  ## Creating the current indices of the vector
+  vector_current_indices <- 1:length(vector)
+  
+  ## Adding small amount of values (between 0 and 0.9) to the `inserted_indices`
+  new_inserted_indices <- inserted_indices + seq(0, 0.9, length.out = length(inserted_indices))
+
+  ## Appending the `new_inserted_indices` to the current vector indices
+  indices <- c(vector_current_indices, new_inserted_indices)
+
+  ## Ordering the indices
+  ordered_indices <- order(indices)
+
+  ## Appending the new value to the existing vector
+  new_vector <- c(vector, values)
+
+  ## Ordering the new vector wrt the ordered indices
+  new_vector[ordered_indices]
+}
+```
+
+
+```{r}
+metascores <- append_vector(metascores, c(1, 1, 1, 13, 24), NA)
+metascores <- metascores[-17]
+title <- title[-17]
+genre <- genre[-17]
+run_time <- run_time[-17]
+year <- year[-17]
+```
+
+
+```{r}
+data <- tibble(title, year, genre, ratings, metascores, votes, run_time) 
+```
+
+```{r}
+data %>% 
+  mutate(ratings = floor(as.numeric(ratings)),
+         ratings = as_factor(ratings)) %>% 
+  ggplot(aes(x = ratings, y = votes)) +
+  geom_boxplot()
+```
+
