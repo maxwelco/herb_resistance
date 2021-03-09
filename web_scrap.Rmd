@@ -36,12 +36,13 @@ usa_resistance <- scraper(url = "http://weedscience.org/Summary/Country.aspx?Cou
 ```{r}
 chart_usa <- usa_resistance %>% 
   janitor::row_to_names(row_number = 2) %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  as_tibble()
 
-chart_usa1 <- as_tibble(chart_usa)
 
-chart_usa1 %>% 
-  mutate()
+chart_usa %>% 
+  drop_na() %>% 
+  dplyr::select(-x)
 ```
 
 ```{r}

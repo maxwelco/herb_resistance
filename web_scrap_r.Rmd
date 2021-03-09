@@ -22,19 +22,13 @@ library(rvest)
 library(tidyverse)
 ```
 
-```{r}
+```{r word-resistance}
 world_res <- read_html("http://weedscience.org/Summary/CountrySummary.aspx")
-```
 
-
-```{r}
 resistance_chart <- world_res %>% 
     html_node("table") %>% 
     html_table(fill = TRUE, header = TRUE)
-```
 
-
-```{r}
 resistance_chart %>% 
   janitor::row_to_names(row_number = 1) %>% 
   as_tibble() %>% 
@@ -42,25 +36,57 @@ resistance_chart %>%
 ```
 
 
-
 ```{r}
-scholar <- read_html("https://scholar.google.com/citations?hl=en&user=nwwARKUAAAAJ&view_op=list_works&sortby=pubdate")
-```
+usa_res <- read_html("http://weedscience.org/Summary/Country.aspx?CountryID=45")
 
+usa_chart <- usa_res %>% 
+    html_node(".rgMasterTable") %>% 
+    html_table(fill = TRUE, header = FALSE)
 
-```{r}
-scholar_chart <- scholar %>% 
-    html_nodes(".gsc_a_t , .gsc_a_c , .gsc_a_y , .gsc_a_a") %>% 
-    html_text()
-
-scholar_chart
-```
-
-
-```{r}
-resistance_chart %>% 
-  janitor::row_to_names(row_number = 1) %>% 
+final_usa_chart <- usa_chart %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  janitor::clean_names() %>% 
   as_tibble() %>% 
-  pivot_longer(cols = A:Other, names_to = "SOA", values_to = "Number")
+  drop_na() %>% 
+  dplyr::select(-x)
 ```
 
+
+```{r brazil}
+bra_res <- read_html("http://weedscience.org/Summary/Country.aspx?CountryID=5")
+
+bra_chart <- bra_res %>% 
+    html_node(".rgMasterTable") %>% 
+    html_table(fill = TRUE, header = FALSE)
+
+final_bra_chart <- bra_chart %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  janitor::clean_names() %>% 
+  as_tibble() 
+```
+
+
+```{r}
+tfile = tempfile(fileext=".html")
+download.file("http://youtube.com/", tfile)
+rstudioapi::viewer(tfile)
+```
+
+```{r brazil}
+species <- read_html("http://weedscience.org/Summary/Species.aspx")
+```
+
+
+```{r brazil}
+sp_chart <- species %>% 
+    html_node("table") %>% 
+    html_table(fill = TRUE, header = FALSE)
+```
+
+
+```{r brazil}
+final_bra_chart <- bra_chart %>% 
+  janitor::row_to_names(row_number = 2) %>% 
+  janitor::clean_names() %>% 
+  as_tibble() 
+```
